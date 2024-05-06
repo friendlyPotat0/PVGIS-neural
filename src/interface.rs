@@ -77,7 +77,7 @@ impl Interface {
                 let file_path = file.path();
                 if let Some(file_name) = file_path.file_name() {
                     if let Some(file_name_str) = file_name.to_str() {
-                        println!("Interpreting {}!", file_name_str);
+                        println!("Interpreting: {}!", file_name_str);
                         // Load JSON file
                         let json_str = fs::read_to_string(file_path).unwrap();
                         let json_data: Value = serde_json::from_str(&json_str).unwrap();
@@ -142,13 +142,13 @@ impl Interface {
     }
 
     fn convert_to_unix_timestamp(timestamp_str: &str) -> i64 {
-        // Convert timestamp string '20050101:0010' to Unix timestamp
-        // Example format: "%Y%m%d:%H%M"
-        let format = "%Y%m%d:%H%M";
-        let timestamp = DateTime::parse_from_str(timestamp_str, format)
-            .expect("Failed to parse timestamp string")
-            .timestamp();
-        timestamp
+        // Parse the timestamp string
+        let datetime = NaiveDateTime::parse_from_str(timestamp_str, "%Y%m%d:%H%M").unwrap();
+        // Convert to UTC
+        let utc_datetime = DateTime::<Utc>::from_utc(datetime, Utc);
+        // Convert to Unix timestamp
+        let unix_timestamp = utc_datetime.timestamp();
+        return unix_timestamp;
     }
 
     pub fn print_result_from_loaded() {}
