@@ -74,7 +74,8 @@ impl Interface {
             if let Ok(file) = file {
                 let file_path = file.path();
                 if let Some(file_name) = file_path.file_name() {
-                    if let Some(_file_name_str) = file_name.to_str() {
+                    if let Some(file_name_str) = file_name.to_str() {
+                        println!("Interpreting {}!", file_name_str);
                         // Load JSON file
                         let json_str = fs::read_to_string(file_path).unwrap();
                         let json_data: Value = serde_json::from_str(&json_str).unwrap();
