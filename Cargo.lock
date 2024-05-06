@@ -171,6 +171,7 @@ dependencies = [
  "chrono",
  "neuroflow",
  "rand",
+ "serde_json",
 ]
 
 [[package]]
