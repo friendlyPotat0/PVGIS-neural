@@ -6,3 +6,6 @@ edition = "2021"
 [dependencies]
 neuroflow = "0.2.0"
 rand = "0.8.5"
+
+[patch.crates-io]
+neuroflow = { path = "patch/NeuroFlow" }

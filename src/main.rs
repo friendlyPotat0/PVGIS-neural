@@ -13,6 +13,9 @@ fn main(){
     */
     let mut nn = FeedForward::new(&[2, 2, 1]);
     
+    let logfile = String::from("resources/rmse_02.txt");
+    nn.set_logfile(&logfile);
+    
     /*
         Define DataSet.
         
@@ -35,7 +38,7 @@ fn main(){
     nn.activation(Tanh)
         .learning_rate(0.1)
         .momentum(0.15)
-        .train(&data, 100_000);
+        .train(&data, 2500);
 
     let mut res;
     

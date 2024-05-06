@@ -90,8 +90,6 @@ dependencies = [
 [[package]]
 name = "neuroflow"
 version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ae87423fae85fa812191840fa97d0ec40486424afaa402579e6dc4c4a533754"
 dependencies = [
  "bincode",
  "csv",
