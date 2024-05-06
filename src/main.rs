@@ -30,14 +30,3 @@ fn request_num_input(message: &String) -> i32 {
     let num: i32 = num.trim().parse().expect("Input must be an integer");
     return num;
 }
-
-fn request_string_input(message: &String) -> String {
-    let mut num = String::new();
-    print!("{}", message);
-    io::Write::flush(&mut io::stdout()).expect("Failed to flush stdout");
-    io::stdin()
-        .read_line(&mut num)
-        .expect("Failed to read line");
-    // let num: i32 = num.trim().parse().expect("Input must be an integer");
-    return num;
-}

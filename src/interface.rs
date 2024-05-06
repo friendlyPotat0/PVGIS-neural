@@ -15,12 +15,12 @@ pub struct Interface {}
 impl Interface {
     pub fn train_test() {
         let mut nn = FeedForward::new(&[2, 2, 1]);
-        let logfile = String::from("resources/rmse_00.txt");
+        let logfile = String::from("resources/errors/rmse_00.txt");
         nn.set_logfile(&logfile);
         let mut data: DataSet = DataSet::new();
         let mut i = -3.0;
         let mut rng = rand::thread_rng();
-        while i <= 2.5 {
+        while i <= 120.5 {
             let a: u8 = rng.gen_range(0..=1);
             let b: u8 = rng.gen_range(0..=1);
             data.push(&[a.into(), b.into()], &[(a ^ b).into()]);
@@ -30,12 +30,14 @@ impl Interface {
             .learning_rate(0.1)
             .momentum(0.15)
             .train(&data);
+        neuroflow::io::save(&mut nn, "resources/models/test.flow").unwrap();
+        let mut new_nn: FeedForward = neuroflow::io::load("resources/models/test.flow").unwrap();
         let mut res;
         i = 0.0;
         while i <= 0.3 {
             let a: u8 = rng.gen_range(0..=1);
             let b: u8 = rng.gen_range(0..=1);
-            res = nn.calc(&[a.into(), b.into()])[0];
+            res = new_nn.calc(&[a.into(), b.into()])[0];
             println!(
                 "for [{:.3}], [{:.3}] = [{:.3}] -> [{:.3}]",
                 a,
