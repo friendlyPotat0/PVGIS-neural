@@ -1,39 +1,39 @@
-extern crate neuroflow;
+mod interface;
 
-use neuroflow::FeedForward;
-use neuroflow::data::DataSet;
-use neuroflow::activators::Type::Tanh;
-use rand::Rng;
+use std::io;
+use interface::Interface;
 
+fn main() {
+    println!("PVGIS NEURAL\n1. Train model\n2. Print power given timestamp\n3. Save to disk power profile (year)\n4. Save to disk calculated energy from timestamp range\n5. Quit");
+    let option = request_num_input(&"Enter option: ".to_string());
+    match option {
+          1=>Interface::train_neural_network(),
+          2=>Interface::print_result_from_loaded(),
+          3=>Interface::write_result_from_loaded_given_input_range(),
+          4=>Interface::integrate_from_loaded_given_input_range_and_write(),
+          5=>println!("Bye!"),
+          _=>println!("Not a valid option. Try again"),
+    }
+}
 
-fn main(){
-    /*
-        Define a neural network with 1 neuron in input layers. The network contains 4 hidden layers.
-        And, such as our function returns a single value, it is reasonable to have 1 neuron in the output layer.
-    */
-    let mut nn = FeedForward::new(&[3, 64, 32, 1]);
-    
-    let logfile = String::from("resources/rmse_02.txt");
-    nn.set_logfile(&logfile);
-    
-    let mut data: DataSet = DataSet::new();
-    // data.push(&[a.into(), b.into()], &[(a ^ b).into()]);
-    
-    // Here, we set the necessary parameters and train the neural network by our DataSet with 50 000 iterations
-    nn.activation(Tanh)
-        .learning_rate(0.1)
-        .momentum(0.15)
-        .train(&data, 2500);
+fn request_num_input(message: &String) -> i32 {
+    let mut num = String::new();
+    print!("{}", message);
+    io::Write::flush(&mut io::stdout()).expect("Failed to flush stdout");
+    io::stdin()
+        .read_line(&mut num)
+        .expect("Failed to read line");
+    let num: i32 = num.trim().parse().expect("Input must be an integer");
+    return num;
+}
 
-    // let mut res;
-    
-    // Let's check the result
-    /* i = 0.0;
-    while i <= 0.3{
-        let a: u8 = rng.gen_range(0..=1);
-        let b: u8 = rng.gen_range(0..=1);
-        res = nn.calc(&[a.into(), b.into()])[0];
-        println!("for [{:.3}], [{:.3}] = [{:.3}] -> [{:.3}]", a, b, a ^ b, res);
-        i += 0.07;
-    } */
+fn request_string_input(message: &String) -> String {
+    let mut num = String::new();
+    print!("{}", message);
+    io::Write::flush(&mut io::stdout()).expect("Failed to flush stdout");
+    io::stdin()
+        .read_line(&mut num)
+        .expect("Failed to read line");
+    // let num: i32 = num.trim().parse().expect("Input must be an integer");
+    return num;
 }
