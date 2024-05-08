@@ -9,13 +9,13 @@ use neuroflow::data::DataSet;
 use neuroflow::FeedForward;
 use serde_json::Value;
 
-pub struct Interface {
+pub struct Trainer {
     database_path: String,
     log_path: String,
 }
 
-impl Interface {
-    pub fn new(path: String) -> Interface {
+impl Trainer {
+    pub fn new(path: String) -> Trainer {
         Self {
             database_path: path,
             log_path: String::from(""),
@@ -106,7 +106,7 @@ impl Interface {
         println!("Training finished!");
         // save model to disk
         let filename = format!(
-            "{}/model_{}_samples_{}.flow",
+            "{}/model_{}_samples_{}.bin",
             ouput_path, samples, unix_timestamp_str
         );
         neuroflow::io::save(&mut nn, &filename).unwrap();
@@ -134,18 +134,6 @@ impl Interface {
         let unix_timestamp = utc_datetime.timestamp();
         return unix_timestamp;
     }
-
-    /* pub fn print_result_from_loaded(path: &String, input: f64) {
-        let mut nn: FeedForward = neuroflow::io::load(path).unwrap();
-        let result = nn.calc(&[input])[0];
-        println!("{result}")
-    }
-
-    pub fn write_result_from_loaded_given_input_range(path: &String) {
-        let mut nn: FeedForward = neuroflow::io::load("resources/models/test.flow").unwrap();
-    } */
-
-    /* pub fn integrate_from_loaded_given_input_range_and_write() {} */
 
     pub fn train_test() {
         let mut nn = FeedForward::new(&[2, 2, 1]);

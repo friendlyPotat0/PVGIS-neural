@@ -1,6 +1,6 @@
-mod interface;
+mod trainer;
 
-use interface::Interface;
+use trainer::Trainer;
 use neuroflow::activators::Type;
 use std::{env, io};
 
@@ -13,19 +13,19 @@ fn main() {
     println!("4. Quit");
     let option = request_num_input("Enter option: ");
     match option {
-        0 => Interface::train_test(),
+        0 => Trainer::train_test(),
         1 => {
             let database_path = request_string_input("Enter path to database: ");
-            let mut interface = Interface::new(database_path);
+            let mut trainer = Trainer::new(database_path);
             let output_path = request_string_input("Enter path to store trained model: ");
             let log_file = request_string_input("Enter log file path [optional]: ");
-            interface.enable_error_logging(log_file);
+            trainer.enable_error_logging(log_file);
             let samples = request_num_input("Enter number of samples to feed [0 for all available]: ");
             let topology = request_int_slice_input("Enter topology: ");
             let activation_function = request_activation_function();
             let eta = request_double_input("Enter learning rate: ");
             let alpha = request_double_input("Enter momentum: ");
-            interface.train_neural_network(
+            trainer.train_neural_network(
                 &output_path,
                 samples as usize,
                 &topology,
