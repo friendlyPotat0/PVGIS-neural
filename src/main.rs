@@ -15,14 +15,24 @@ fn main() {
     match option {
         0 => Interface::train_test(),
         1 => {
-            let path = request_string_input("Enter path to database: ");
-            let mut interface = Interface::new(path);
-            let samples = request_num_input("Enter number of samples to feed: ");
+            let database_path = request_string_input("Enter path to database: ");
+            let mut interface = Interface::new(database_path);
+            let output_path = request_string_input("Enter path to store trained model: ");
+            let log_file = request_string_input("Enter log file path [optional]: ");
+            interface.enable_error_logging(log_file);
+            let samples = request_num_input("Enter number of samples to feed [0 for all available]: ");
             let topology = request_int_slice_input("Enter topology: ");
             let activation_function = request_activation_function();
             let eta = request_double_input("Enter learning rate: ");
             let alpha = request_double_input("Enter momentum: ");
-            interface.train_neural_network(samples as usize, &topology, activation_function, eta, alpha);
+            interface.train_neural_network(
+                &output_path,
+                samples as usize,
+                &topology,
+                activation_function,
+                eta,
+                alpha,
+            );
         }
         // 2 => Interface::print_result_from_loaded(),
         // 3 => Interface::write_result_from_loaded_given_input_range(),

@@ -10,15 +10,31 @@ use neuroflow::FeedForward;
 use serde_json::Value;
 
 pub struct Interface {
-    path: String,
+    database_path: String,
+    log_path: String,
 }
 
 impl Interface {
-    pub fn new (path: String) -> Interface {
-        Self { path }
+    pub fn new(path: String) -> Interface {
+        Self {
+            database_path: path,
+            log_path: String::from(""),
+        }
     }
 
-    pub fn train_neural_network(&mut self, samples: usize, topology: &[i32], activation_function: neuroflow::activators::Type, eta: f64, alpha: f64) {
+    pub fn enable_error_logging(&mut self, log_path: String) {
+        self.log_path = log_path;
+    }
+
+    pub fn train_neural_network(
+        &mut self,
+        ouput_path: &str,
+        samples: usize,
+        topology: &[i32],
+        activation_function: neuroflow::activators::Type,
+        eta: f64,
+        alpha: f64,
+    ) {
         // Get current UTC time
         let utc: DateTime<Utc> = Utc::now();
         let unix_timestamp = utc.timestamp();
@@ -26,15 +42,17 @@ impl Interface {
         // create neural network and specify topology
         let mut nn = FeedForward::new(topology);
         // define logfile for RMSE evolution
-        let filename = format!(
-            "resources/errors/rmse_{}_samples_{}.txt",
-            samples, unix_timestamp_str
-        );
-        nn.set_log_file(filename);
+        if !self.log_path.is_empty() {
+            let filename = format!(
+                "{}/rmse_{}_samples_{}.txt",
+                self.log_path, samples, unix_timestamp_str
+            );
+            nn.enable_error_logging(filename);
+        }
         // define training data set
         let mut data: DataSet = DataSet::new();
         // read files from solar-radiation-database
-        let database_dir = format!("{}", self.path);
+        let database_dir = format!("{}", self.database_path);
         let files = fs::read_dir(database_dir).unwrap();
         // Iterate over files
         let mut i = 0;
@@ -72,7 +90,7 @@ impl Interface {
                                 );
                             }
                         }
-                        if i >= samples {
+                        if i >= samples && samples != 0 {
                             break;
                         }
                     }
@@ -88,8 +106,8 @@ impl Interface {
         println!("Training finished!");
         // save model to disk
         let filename = format!(
-            "resources/models/model_{}_samples_{}.flow",
-            samples, unix_timestamp_str
+            "{}/model_{}_samples_{}.flow",
+            ouput_path, samples, unix_timestamp_str
         );
         neuroflow::io::save(&mut nn, &filename).unwrap();
         println!("Model saved to disk!");
@@ -132,7 +150,7 @@ impl Interface {
     pub fn train_test() {
         let mut nn = FeedForward::new(&[2, 2, 1]);
         let logfile = String::from("resources/errors/rmse_00.txt");
-        nn.set_log_file(logfile);
+        nn.enable_error_logging(logfile);
         let mut data: DataSet = DataSet::new();
         let mut i = -3.0;
         let mut rng = rand::thread_rng();
