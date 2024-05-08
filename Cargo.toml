@@ -10,4 +10,4 @@ rand = "0.8.5"
 serde_json = "1.0.116"
 
 [patch.crates-io]
-neuroflow = { path = "patch/NeuroFlow" }
+neuroflow = { path = "../patched-crates/NeuroFlow" }
